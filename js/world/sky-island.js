@@ -1,4 +1,4 @@
-// Frontier Cyber-Floating Sky Island Architecture & Terrain (High-Performance 60/120 FPS Optimized)
+// Frontier Cyber-Floating Sky Island with Levitating Mini-Islands & Sky Cascades (No Trees, High-Performance)
 import * as THREE from 'three';
 
 export class SkyIsland {
@@ -8,11 +8,11 @@ export class SkyIsland {
     this.root.name = 'SkyIsland';
     this.islandRadius = 38;
 
+    this.waterfallMeshes = [];
+
     this._buildMainIsland();
     this._buildPathways();
-    this._buildFloatingMiniIslands();
-    this._buildVegetation();
-    this._buildWaterfalls();
+    this._buildSkyIslandsAndCascades();
     this._buildEnergyConduits();
 
     this.scene.add(this.root);
@@ -119,109 +119,136 @@ export class SkyIsland {
     });
   }
 
-  _buildFloatingMiniIslands() {
-    const miniPositions = [
-      { x: 50, y: 5, z: -18, scale: 0.55, color: 0x00f2fe },
-      { x: -52, y: -2, z: 28, scale: 0.5, color: 0x9333ea },
-      { x: 12, y: 9, z: 54, scale: 0.45, color: 0xf43f5e },
-      { x: -38, y: 7, z: -48, scale: 0.6, color: 0x10b981 }
+  _buildSkyIslandsAndCascades() {
+    // 4 Floating Sky Islands in the upper atmosphere with waterfalls cascading down onto the main island!
+    const skyIslandsData = [
+      {
+        skyX: 20,
+        skyY: 22,
+        skyZ: -16,
+        radius: 6.5,
+        landingX: 20,
+        landingZ: -16,
+        color: 0x38bdf8
+      },
+      {
+        skyX: -22,
+        skyY: 26,
+        skyZ: -14,
+        radius: 7.0,
+        landingX: -22,
+        landingZ: -14,
+        color: 0x00f2fe
+      },
+      {
+        skyX: -18,
+        skyY: 20,
+        skyZ: 22,
+        radius: 6.0,
+        landingX: -18,
+        landingZ: 22,
+        color: 0x60a5fa
+      },
+      {
+        skyX: 22,
+        skyY: 24,
+        skyZ: 18,
+        radius: 6.8,
+        landingX: 22,
+        landingZ: 18,
+        color: 0x00f2fe
+      }
     ];
 
     const grassMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.7 });
     const rockMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85, flatShading: true });
-    const topGeo = new THREE.CylinderGeometry(15, 16, 2.5, 16);
-    const bottomGeo = new THREE.ConeGeometry(16, 20, 16);
-    const crystalGeo = new THREE.OctahedronGeometry(3.2, 0);
-
-    miniPositions.forEach(p => {
-      const island = new THREE.Group();
-      island.position.set(p.x, p.y, p.z);
-      island.scale.setScalar(p.scale);
-
-      const top = new THREE.Mesh(topGeo, grassMat);
-      island.add(top);
-
-      const bottom = new THREE.Mesh(bottomGeo, rockMat);
-      bottom.rotation.x = Math.PI;
-      bottom.position.y = -11;
-      island.add(bottom);
-
-      const crystalMat = new THREE.MeshBasicMaterial({ color: p.color });
-      const crystal = new THREE.Mesh(crystalGeo, crystalMat);
-      crystal.position.y = 5.5;
-      island.add(crystal);
-
-      const bridgeGeo = new THREE.PlaneGeometry(2.0, 20);
-      const bridgeMat = new THREE.MeshBasicMaterial({
-        color: p.color,
-        transparent: true,
-        opacity: 0.35,
-        side: THREE.DoubleSide
-      });
-      const bridge = new THREE.Mesh(bridgeGeo, bridgeMat);
-      bridge.rotation.x = Math.PI / 2;
-      bridge.position.set(-p.x * 0.25, -p.y * 0.25, -p.z * 0.25);
-      bridge.lookAt(0, 0, 0);
-      island.add(bridge);
-
-      this.root.add(island);
-    });
-  }
-
-  _buildVegetation() {
-    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7 });
-    const cyberLeavesCyan = new THREE.MeshStandardMaterial({ color: 0x00f2fe, emissive: 0x0284c7, emissiveIntensity: 0.4, roughness: 0.6, flatShading: true });
-    const cyberLeavesPurple = new THREE.MeshStandardMaterial({ color: 0xc084fc, emissive: 0x9333ea, emissiveIntensity: 0.4, roughness: 0.6, flatShading: true });
-    const emeraldLeaves = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.7, flatShading: true });
-
-    const trunkGeo = new THREE.CylinderGeometry(0.28, 0.42, 2.8, 6);
-    const leafBottomGeo = new THREE.DodecahedronGeometry(2.0, 0);
-    const leafTopGeo = new THREE.DodecahedronGeometry(1.4, 0);
-
-    for (let i = 0; i < 20; i++) {
-      const angle = (i / 20) * Math.PI * 2 + 0.18;
-      const distance = 16 + (i % 3) * 7.5;
-
-      const treeGroup = new THREE.Group();
-      treeGroup.position.set(
-        Math.cos(angle) * distance,
-        0,
-        Math.sin(angle) * distance
-      );
-
-      const scale = 0.85 + Math.random() * 0.45;
-      treeGroup.scale.setScalar(scale);
-
-      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-      trunk.position.y = 1.4;
-      treeGroup.add(trunk);
-
-      const folMat = i % 3 === 0 ? cyberLeavesCyan : (i % 3 === 1 ? cyberLeavesPurple : emeraldLeaves);
-
-      const leafBottom = new THREE.Mesh(leafBottomGeo, folMat);
-      leafBottom.position.y = 3.2;
-      treeGroup.add(leafBottom);
-
-      const leafTop = new THREE.Mesh(leafTopGeo, folMat);
-      leafTop.position.y = 4.5;
-      treeGroup.add(leafTop);
-
-      this.root.add(treeGroup);
-    }
-  }
-
-  _buildWaterfalls() {
-    const waterMat = new THREE.MeshBasicMaterial({
+    const crystalWaterMat = new THREE.MeshBasicMaterial({
       color: 0x00f2fe,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.75,
+      side: THREE.DoubleSide
+    });
+    const poolWaterMat = new THREE.MeshBasicMaterial({
+      color: 0x0284c7,
+      transparent: true,
+      opacity: 0.85
+    });
+    const splashMistMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.65
     });
 
-    const fallGeo = new THREE.PlaneGeometry(4.0, 32);
-    const fallMesh = new THREE.Mesh(fallGeo, waterMat);
-    fallMesh.position.set(-this.islandRadius + 0.8, -16, 9);
-    fallMesh.rotation.y = Math.PI / 2;
-    this.root.add(fallMesh);
+    skyIslandsData.forEach((isl, idx) => {
+      const islandGroup = new THREE.Group();
+      islandGroup.position.set(isl.skyX, isl.skyY, isl.skyZ);
+
+      // Upper Island Top Surface
+      const topGeo = new THREE.CylinderGeometry(isl.radius, isl.radius + 1.0, 1.8, 20);
+      const topMesh = new THREE.Mesh(topGeo, grassMat);
+      islandGroup.add(topMesh);
+
+      // Upper Island Rock Underbelly
+      const rockGeo = new THREE.ConeGeometry(isl.radius + 1.0, 9.0, 16);
+      const rockMesh = new THREE.Mesh(rockGeo, rockMat);
+      rockMesh.rotation.x = Math.PI;
+      rockMesh.position.y = -5.0;
+      islandGroup.add(rockMesh);
+
+      // Celestial Spring Pool on Upper Island
+      const springGeo = new THREE.CylinderGeometry(isl.radius * 0.55, isl.radius * 0.55, 0.2, 16);
+      const springMesh = new THREE.Mesh(springGeo, poolWaterMat);
+      springMesh.position.y = 0.95;
+      islandGroup.add(springMesh);
+
+      // Floating Crystal Power Core above spring
+      const crystalGeo = new THREE.OctahedronGeometry(1.4, 0);
+      const crystalMat = new THREE.MeshBasicMaterial({ color: isl.color });
+      const crystal = new THREE.Mesh(crystalGeo, crystalMat);
+      crystal.position.y = 3.4;
+      islandGroup.add(crystal);
+
+      this.root.add(islandGroup);
+
+      // 🌊 Cascading Waterfall Curtain Pouring Down from Sky Island to Main Island!
+      const fallHeight = isl.skyY - 0.2;
+      const fallWidth = 2.4;
+      const fallGeo = new THREE.PlaneGeometry(fallWidth, fallHeight, 4, 12);
+      const fallMesh = new THREE.Mesh(fallGeo, crystalWaterMat);
+
+      // Position waterfall vertically between sky island edge and main island
+      fallMesh.position.set(isl.skyX + isl.radius * 0.7, fallHeight / 2, isl.skyZ);
+      fallMesh.rotation.y = idx % 2 === 0 ? Math.PI / 4 : -Math.PI / 4;
+      this.root.add(fallMesh);
+      this.waterfallMeshes.push(fallMesh);
+
+      // Second angled water layer for 3D volume
+      const fallMesh2 = new THREE.Mesh(fallGeo, crystalWaterMat);
+      fallMesh2.position.set(isl.skyX + isl.radius * 0.7, fallHeight / 2, isl.skyZ);
+      fallMesh2.rotation.y = (idx % 2 === 0 ? Math.PI / 4 : -Math.PI / 4) + Math.PI / 2;
+      this.root.add(fallMesh2);
+
+      // Splash Pool on the Main Island Ground
+      const splashPoolGeo = new THREE.CylinderGeometry(3.2, 3.4, 0.12, 18);
+      const splashPool = new THREE.Mesh(splashPoolGeo, poolWaterMat);
+      splashPool.position.set(isl.skyX + isl.radius * 0.7, 0.08, isl.skyZ);
+      this.root.add(splashPool);
+
+      // Splash Pool Border (River Stones)
+      const borderGeo = new THREE.TorusGeometry(3.3, 0.2, 8, 20);
+      const borderMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 });
+      const border = new THREE.Mesh(borderGeo, borderMat);
+      border.rotation.x = Math.PI / 2;
+      border.position.set(isl.skyX + isl.radius * 0.7, 0.12, isl.skyZ);
+      this.root.add(border);
+
+      // Foam Splash Mist Ring
+      const foamGeo = new THREE.RingGeometry(1.2, 2.8, 16);
+      const foam = new THREE.Mesh(foamGeo, splashMistMat);
+      foam.rotation.x = -Math.PI / 2;
+      foam.position.set(isl.skyX + isl.radius * 0.7, 0.15, isl.skyZ);
+      this.root.add(foam);
+    });
   }
 
   _buildEnergyConduits() {
@@ -231,9 +258,9 @@ export class SkyIsland {
     const cyanMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
     const purpleMat = new THREE.MeshBasicMaterial({ color: 0x9333ea });
 
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2 + 0.22;
-      const distance = 14 + (i % 2) * 10;
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2 + 0.38;
+      const distance = 14;
 
       const pylonGroup = new THREE.Group();
       pylonGroup.position.set(
