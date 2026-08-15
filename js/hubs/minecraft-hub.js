@@ -1,4 +1,4 @@
-// Minecraft Hub Modal Controller
+// Minecraft Hub Modal Controller (Direct 1-Click Native Launcher)
 
 export class MinecraftHub {
   static open(account, soundFX = null) {
@@ -55,16 +55,38 @@ export class MinecraftHub {
 
     modal.classList.add('active');
 
-    document.getElementById('launchMinecraftBtn').addEventListener('click', () => {
-      if (soundFX) soundFX.playScore();
-      window.location.href = 'minecraft://';
-      alert('Launching Minecraft Bedrock Edition!');
-    });
+    const launchBtn = document.getElementById('launchMinecraftBtn');
+    const joinBtn = document.getElementById('joinCotmonServerBtn');
 
-    document.getElementById('joinCotmonServerBtn').addEventListener('click', () => {
+    const doLaunch = async () => {
       if (soundFX) soundFX.playScore();
-      window.location.href = 'minecraft://';
-      alert('Opening Minecraft and connecting to Cotmon Server!');
-    });
+      if (launchBtn) {
+        launchBtn.textContent = '⛏️ Launching...';
+        launchBtn.disabled = true;
+      }
+
+      try {
+        if (window.kioskAPI && window.kioskAPI.launchMinecraft) {
+          await window.kioskAPI.launchMinecraft();
+        } else {
+          await fetch('/api/launch/minecraft', { method: 'POST' });
+        }
+      } catch (e) {
+        window.location.href = 'minecraft://';
+      }
+
+      if (launchBtn) {
+        launchBtn.textContent = '🎮 Minecraft is Running!';
+        setTimeout(() => {
+          if (launchBtn) {
+            launchBtn.textContent = 'Launch Minecraft';
+            launchBtn.disabled = false;
+          }
+        }, 4000);
+      }
+    };
+
+    launchBtn.addEventListener('click', doLaunch);
+    joinBtn.addEventListener('click', doLaunch);
   }
 }

@@ -1,4 +1,4 @@
-// Roblox Hub Modal Controller
+// Roblox Hub Modal Controller (Direct 1-Click Native Launcher)
 
 export class RobloxHub {
   static open(account, soundFX = null) {
@@ -21,7 +21,7 @@ export class RobloxHub {
       <div class="launcher-banner">
         <div>
           <h3 style="font-size: 18px; margin-bottom: 4px;">🚀 Launch Roblox Player</h3>
-          <p style="font-size: 13px; color: var(--text-muted);">Boots the official Roblox client on your terminal.</p>
+          <p style="font-size: 13px; color: var(--text-muted);">Boots the official Roblox client on your terminal directly.</p>
         </div>
         <button type="button" class="launcher-btn" id="launchRobloxAppBtn">Play Roblox Now</button>
       </div>
@@ -90,21 +90,44 @@ export class RobloxHub {
 
     modal.classList.add('active');
 
-    // Launch Roblox Button handler
-    document.getElementById('launchRobloxAppBtn').addEventListener('click', () => {
-      if (soundFX) soundFX.playScore();
-      // Try launching protocol uri
-      window.location.href = 'roblox://';
-      alert('Launching Roblox Player on your terminal!');
-    });
+    const launchBtn = document.getElementById('launchRobloxAppBtn');
 
-    // Game card click
+    const doLaunch = async (gameName = null) => {
+      if (soundFX) soundFX.playScore();
+      if (launchBtn) {
+        launchBtn.textContent = '🚀 Launching...';
+        launchBtn.disabled = true;
+      }
+
+      try {
+        if (window.kioskAPI && window.kioskAPI.launchRoblox) {
+          await window.kioskAPI.launchRoblox();
+        } else {
+          // Native backend spawn (bypasses Chrome popups completely!)
+          await fetch('/api/launch/roblox', { method: 'POST' });
+        }
+      } catch (e) {
+        // Protocol fallback
+        window.location.href = 'roblox://';
+      }
+
+      if (launchBtn) {
+        launchBtn.textContent = gameName ? `🎮 Launching ${gameName}!` : '🎮 Roblox is Running!';
+        setTimeout(() => {
+          if (launchBtn) {
+            launchBtn.textContent = 'Play Roblox Now';
+            launchBtn.disabled = false;
+          }
+        }, 4000);
+      }
+    };
+
+    launchBtn.addEventListener('click', () => doLaunch());
+
     container.querySelectorAll('.game-card').forEach(card => {
       card.addEventListener('click', () => {
-        if (soundFX) soundFX.playClick();
         const game = card.querySelector('.game-name').textContent;
-        window.location.href = 'roblox://';
-        alert(`Opening Roblox to launch "${game}"!`);
+        doLaunch(game);
       });
     });
   }

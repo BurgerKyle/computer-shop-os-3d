@@ -356,6 +356,29 @@ const server = http.createServer(async (req, res) => {
       }
       return send(200, { ok: true });
     }
+
+    // 8. Native Game Launchers (Bypasses all Chrome protocol popups)
+    if (pathname === '/api/launch/roblox' && req.method === 'POST') {
+      const { spawn } = require('child_process');
+      try {
+        const proc = spawn('cmd.exe', ['/c', 'start', 'roblox://'], { detached: true, stdio: 'ignore' });
+        proc.unref();
+        return send(200, { ok: true, message: 'Roblox launched directly on Windows' });
+      } catch (e) {
+        return send(500, { ok: false, error: e.message });
+      }
+    }
+
+    if (pathname === '/api/launch/minecraft' && req.method === 'POST') {
+      const { spawn } = require('child_process');
+      try {
+        const proc = spawn('cmd.exe', ['/c', 'start', 'minecraft://'], { detached: true, stdio: 'ignore' });
+        proc.unref();
+        return send(200, { ok: true, message: 'Minecraft launched directly on Windows' });
+      } catch (e) {
+        return send(500, { ok: false, error: e.message });
+      }
+    }
   }
 
   // --- Static File Serving ---
