@@ -1,4 +1,4 @@
-// Frontier AI Lab 3D Interactive Hub Megastructures
+// Frontier AI Lab 3D Interactive Hub Megastructures (High-Performance 60/120 FPS Optimized)
 import * as THREE from 'three';
 
 export class HubsManager {
@@ -38,7 +38,7 @@ export class HubsManager {
     const wardAngle = (330 * Math.PI) / 180;
     this._createWardrobeHub(Math.sin(wardAngle) * 26, 0, Math.cos(wardAngle) * 26);
 
-    // 8. Kuya Ricky Operations Command (Center, Z = -4)
+    // 8. Kuya Ricky Operations Command (Center, Z = -4.5)
     this._createAdminCommandStation(0, 0, -4.5);
   }
 
@@ -47,37 +47,25 @@ export class HubsManager {
     hub.position.set(x, y, z);
 
     // Quantum Ring Accelerator Frame
-    const ringGeo = new THREE.TorusGeometry(3.4, 0.3, 16, 48);
-    const ringMat = new THREE.MeshStandardMaterial({
-      color: 0xef4444,
-      emissive: 0xb91c1c,
-      emissiveIntensity: 0.7,
-      metalness: 0.8,
-      roughness: 0.2
-    });
+    const ringGeo = new THREE.TorusGeometry(3.4, 0.25, 12, 36);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.position.y = 3.6;
     hub.add(ring);
     hub.userData.outerRing = ring;
 
     // Inner Counter-Rotating Ring
-    const innerRingGeo = new THREE.TorusGeometry(2.8, 0.15, 16, 36);
-    const innerMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      emissive: 0xef4444,
-      emissiveIntensity: 0.9
-    });
+    const innerRingGeo = new THREE.TorusGeometry(2.8, 0.12, 12, 28);
+    const innerMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
     const innerRing = new THREE.Mesh(innerRingGeo, innerMat);
     innerRing.position.y = 3.6;
     hub.add(innerRing);
     hub.userData.innerRing = innerRing;
 
     // Event Horizon Energy Core
-    const portalGeo = new THREE.CircleGeometry(2.6, 32);
-    const portalMat = new THREE.MeshStandardMaterial({
-      color: 0xef4444,
-      emissive: 0xdc2626,
-      emissiveIntensity: 1.0,
+    const portalGeo = new THREE.CircleGeometry(2.6, 24);
+    const portalMat = new THREE.MeshBasicMaterial({
+      color: 0xdc2626,
       transparent: true,
       opacity: 0.85,
       side: THREE.DoubleSide
@@ -88,28 +76,18 @@ export class HubsManager {
 
     // Floating 3D Diamond Hologram
     const logoGeo = new THREE.OctahedronGeometry(1.0, 0);
-    const logoMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      emissive: 0xef4444,
-      emissiveIntensity: 0.8,
-      metalness: 0.9,
-      roughness: 0.1
-    });
+    const logoMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
     const logo = new THREE.Mesh(logoGeo, logoMat);
     logo.position.y = 6.2;
     hub.add(logo);
     hub.userData.logo = logo;
 
     // Dark Titanium Pedestal
-    const baseGeo = new THREE.CylinderGeometry(3.8, 4.2, 0.4, 32);
+    const baseGeo = new THREE.CylinderGeometry(3.8, 4.2, 0.4, 24);
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5, metalness: 0.6 });
     const base = new THREE.Mesh(baseGeo, baseMat);
     base.position.y = 0.2;
     hub.add(base);
-
-    const beaconLight = new THREE.PointLight(0xef4444, 2.5, 14);
-    beaconLight.position.y = 3.6;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -135,10 +113,8 @@ export class HubsManager {
 
     // Shimmering Nether Rift
     const riftGeo = new THREE.PlaneGeometry(3.0, 4.6);
-    const riftMat = new THREE.MeshStandardMaterial({
+    const riftMat = new THREE.MeshBasicMaterial({
       color: 0x9333ea,
-      emissive: 0x7e22ce,
-      emissiveIntensity: 1.0,
       transparent: true,
       opacity: 0.9,
       side: THREE.DoubleSide
@@ -149,29 +125,15 @@ export class HubsManager {
 
     // Floating Emerald & Diamond Monoliths
     const emeraldGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-    const emeraldMat = new THREE.MeshStandardMaterial({
-      color: 0x10b981,
-      emissive: 0x059669,
-      emissiveIntensity: 0.7,
-      roughness: 0.2
-    });
+    const emeraldMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
     const emerald = new THREE.Mesh(emeraldGeo, emeraldMat);
     emerald.position.set(-2.8, 0.7, 0);
     hub.add(emerald);
 
-    const diamondMat = new THREE.MeshStandardMaterial({
-      color: 0x00f2fe,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.7,
-      roughness: 0.2
-    });
+    const diamondMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
     const diamond = new THREE.Mesh(emeraldGeo, diamondMat);
     diamond.position.set(2.8, 0.7, 0);
     hub.add(diamond);
-
-    const beaconLight = new THREE.PointLight(0x9333ea, 2.5, 14);
-    beaconLight.position.y = 3.2;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -196,12 +158,8 @@ export class HubsManager {
     hub.add(roof);
 
     // Glowing Neon Cyber Columns
-    const colGeo = new THREE.CylinderGeometry(0.18, 0.18, 3.8, 8);
-    const colMat = new THREE.MeshStandardMaterial({
-      color: 0x00f2fe,
-      emissive: 0x00f2fe,
-      emissiveIntensity: 0.9
-    });
+    const colGeo = new THREE.CylinderGeometry(0.18, 0.18, 3.8, 6);
+    const colMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
 
     for (let i = 0; i < 4; i++) {
       const col = new THREE.Mesh(colGeo, colMat);
@@ -210,7 +168,7 @@ export class HubsManager {
       hub.add(col);
     }
 
-    // Arcade Console & Holographic Screen
+    // Arcade Console & Screen
     const arcadeGeo = new THREE.BoxGeometry(1.4, 2.4, 1.4);
     const arcadeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 });
     const arcade = new THREE.Mesh(arcadeGeo, arcadeMat);
@@ -218,30 +176,18 @@ export class HubsManager {
     hub.add(arcade);
 
     const screenGeo = new THREE.PlaneGeometry(0.9, 0.7);
-    const screenMat = new THREE.MeshStandardMaterial({
-      color: 0x00f2fe,
-      emissive: 0x00f2fe,
-      emissiveIntensity: 1.0
-    });
+    const screenMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
     const screen = new THREE.Mesh(screenGeo, screenMat);
     screen.position.set(0, 1.5, 0.72);
     hub.add(screen);
 
     // Floating Levitating Space Rocket
-    const rocketGeo = new THREE.ConeGeometry(0.6, 1.6, 8);
-    const rocketMat = new THREE.MeshStandardMaterial({
-      color: 0xf43f5e,
-      emissive: 0xe11d48,
-      emissiveIntensity: 0.6
-    });
+    const rocketGeo = new THREE.ConeGeometry(0.6, 1.6, 6);
+    const rocketMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
     const rocket = new THREE.Mesh(rocketGeo, rocketMat);
     rocket.position.y = 6.2;
     hub.add(rocket);
     hub.userData.rocket = rocket;
-
-    const beaconLight = new THREE.PointLight(0x00f2fe, 2.5, 14);
-    beaconLight.position.y = 3.2;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -265,19 +211,14 @@ export class HubsManager {
     screenFrame.position.y = 3.0;
     hub.add(screenFrame);
 
-    // Glowing Crimson Screen
+    // Crimson Screen
     const screenGeo = new THREE.PlaneGeometry(5.2, 3.0);
-    const screenMat = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
-      emissive: 0xdc2626,
-      emissiveIntensity: 0.6,
-      side: THREE.DoubleSide
-    });
+    const screenMat = new THREE.MeshBasicMaterial({ color: 0xdc2626, side: THREE.DoubleSide });
     const screen = new THREE.Mesh(screenGeo, screenMat);
     screen.position.set(0, 3.0, 0.22);
     hub.add(screen);
 
-    // 3D Play Holographic Glyph
+    // 3D Play Icon
     const playShape = new THREE.Shape();
     playShape.moveTo(-0.45, -0.45);
     playShape.lineTo(0.55, 0);
@@ -285,14 +226,10 @@ export class HubsManager {
     playShape.lineTo(-0.45, -0.45);
 
     const playGeo = new THREE.ExtrudeGeometry(playShape, { depth: 0.12, bevelEnabled: false });
-    const playMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1 });
+    const playMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
     const playIcon = new THREE.Mesh(playGeo, playMat);
     playIcon.position.set(0, 3.0, 0.25);
     hub.add(playIcon);
-
-    const beaconLight = new THREE.PointLight(0xff0000, 2.5, 14);
-    beaconLight.position.y = 3.2;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -310,41 +247,28 @@ export class HubsManager {
     hub.position.set(x, y, z);
 
     // Dyson Sphere Cyber Observatory Base
-    const domeBaseGeo = new THREE.CylinderGeometry(3.8, 4.4, 1.4, 24);
+    const domeBaseGeo = new THREE.CylinderGeometry(3.8, 4.4, 1.4, 18);
     const domeBaseMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4, metalness: 0.7 });
     const domeBase = new THREE.Mesh(domeBaseGeo, domeBaseMat);
     domeBase.position.y = 0.7;
     hub.add(domeBase);
 
     // Rotating Holographic Wireframe Globe
-    const globeGeo = new THREE.SphereGeometry(2.2, 20, 16);
-    const globeMat = new THREE.MeshStandardMaterial({
-      color: 0x00f2fe,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.9,
-      wireframe: true
-    });
+    const globeGeo = new THREE.SphereGeometry(2.2, 14, 10);
+    const globeMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true });
     const globe = new THREE.Mesh(globeGeo, globeMat);
     globe.position.y = 4.0;
     hub.add(globe);
     hub.userData.globe = globe;
 
     // Orbiting Satellite Rings
-    const ringGeo = new THREE.TorusGeometry(3.2, 0.09, 8, 36);
-    const ringMat = new THREE.MeshStandardMaterial({
-      color: 0x38bdf8,
-      emissive: 0x00f2fe,
-      emissiveIntensity: 0.95
-    });
+    const ringGeo = new THREE.TorusGeometry(3.2, 0.08, 6, 24);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = Math.PI / 3;
     ring.position.y = 4.0;
     hub.add(ring);
     hub.userData.ring = ring;
-
-    const beaconLight = new THREE.PointLight(0x00f2fe, 2.5, 14);
-    beaconLight.position.y = 4.0;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -377,23 +301,13 @@ export class HubsManager {
     trophyGroup.position.y = 3.8;
 
     const spireGeo = new THREE.OctahedronGeometry(1.6, 0);
-    const spireMat = new THREE.MeshStandardMaterial({
-      color: 0xffd700,
-      emissive: 0xd97706,
-      emissiveIntensity: 0.7,
-      metalness: 0.95,
-      roughness: 0.05
-    });
+    const spireMat = new THREE.MeshBasicMaterial({ color: 0xffd700 });
     const spire = new THREE.Mesh(spireGeo, spireMat);
     spire.scale.set(0.8, 1.8, 0.8);
     trophyGroup.add(spire);
 
     hub.add(trophyGroup);
     hub.userData.trophy = trophyGroup;
-
-    const beaconLight = new THREE.PointLight(0xf59e0b, 2.8, 14);
-    beaconLight.position.y = 3.8;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -411,11 +325,9 @@ export class HubsManager {
     hub.position.set(x, y, z);
 
     // Holographic Stylist Mirror Arch
-    const mirrorFrameGeo = new THREE.TorusGeometry(2.4, 0.28, 16, 36);
+    const mirrorFrameGeo = new THREE.TorusGeometry(2.4, 0.25, 12, 28);
     const mirrorFrameMat = new THREE.MeshStandardMaterial({
       color: 0xf43f5e,
-      emissive: 0xbe185d,
-      emissiveIntensity: 0.7,
       metalness: 0.85,
       roughness: 0.15
     });
@@ -424,11 +336,9 @@ export class HubsManager {
     hub.add(mirrorFrame);
 
     // Shimmering Holographic Surface
-    const mirrorGeo = new THREE.CircleGeometry(2.2, 32);
-    const mirrorMat = new THREE.MeshStandardMaterial({
+    const mirrorGeo = new THREE.CircleGeometry(2.2, 24);
+    const mirrorMat = new THREE.MeshBasicMaterial({
       color: 0xfb7185,
-      emissive: 0xf43f5e,
-      emissiveIntensity: 0.8,
       transparent: true,
       opacity: 0.8,
       side: THREE.DoubleSide
@@ -436,10 +346,6 @@ export class HubsManager {
     const mirror = new THREE.Mesh(mirrorGeo, mirrorMat);
     mirror.position.set(0, 3.0, 0.05);
     hub.add(mirror);
-
-    const beaconLight = new THREE.PointLight(0xf43f5e, 2.5, 14);
-    beaconLight.position.y = 3.2;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -457,7 +363,7 @@ export class HubsManager {
     hub.position.set(x, y, z);
 
     // Monolithic Golden Beacon Spire
-    const towerGeo = new THREE.CylinderGeometry(0.8, 1.3, 8.5, 12);
+    const towerGeo = new THREE.CylinderGeometry(0.8, 1.3, 8.5, 10);
     const towerMat = new THREE.MeshStandardMaterial({
       color: 0xf59e0b,
       metalness: 0.8,
@@ -469,21 +375,11 @@ export class HubsManager {
 
     // Floating Rotating Golden Core Star
     const starGeo = new THREE.OctahedronGeometry(1.3, 0);
-    const starMat = new THREE.MeshStandardMaterial({
-      color: 0xffd700,
-      emissive: 0xf59e0b,
-      emissiveIntensity: 1.0,
-      metalness: 0.7,
-      roughness: 0.1
-    });
+    const starMat = new THREE.MeshBasicMaterial({ color: 0xffd700 });
     const star = new THREE.Mesh(starGeo, starMat);
     star.position.y = 9.8;
     hub.add(star);
     hub.userData.star = star;
-
-    const beaconLight = new THREE.PointLight(0xf59e0b, 3.2, 18);
-    beaconLight.position.y = 9.8;
-    hub.add(beaconLight);
 
     this.scene.add(hub);
     this.hubs.push({
@@ -497,7 +393,6 @@ export class HubsManager {
   }
 
   update(delta, playerPos) {
-    // Animate hub ornaments
     for (let i = 0; i < this.hubs.length; i++) {
       const h = this.hubs[i];
       const u = h.group.userData;
@@ -516,7 +411,6 @@ export class HubsManager {
       }
       if (u.star) {
         u.star.rotation.y += delta * 1.6;
-        u.star.rotation.z += delta * 0.9;
       }
     }
 

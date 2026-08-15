@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Computer Shop OS - 3D Sky Island Hub</title>
   
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/character-creator.css" />
-  <link rel="stylesheet" href="css/hubs.css" />
+  <link rel="stylesheet" href="css/main.css?v=2.0" />
+  <link rel="stylesheet" href="css/character-creator.css?v=2.0" />
+  <link rel="stylesheet" href="css/hubs.css?v=2.0" />
 
   <!-- Import maps for Three.js ES Modules -->
   <script type="importmap">
@@ -27,9 +27,11 @@
     <!-- Top HUD Bar -->
     <header class="topbar">
       <div class="brand-badge">
-        <span class="brand-icon">🏝️</span>
-        <span class="brand-name">Computer Shop OS</span>
-        <span class="brand-pill">3D Sky Hub</span>
+        <div class="brand-icon-wrap">🏝️</div>
+        <div class="brand-info">
+          <span class="brand-name">Computer Shop OS</span>
+          <span class="brand-sub">Frontier Sky Hub 3D</span>
+        </div>
       </div>
 
       <div class="topbar-right">
@@ -59,34 +61,42 @@
 
     <!-- Bottom Controls HUD -->
     <footer class="bottombar">
-      <div class="controls-hint">
-        <span>🎮 Move:</span>
-        <span class="key-badge">W</span>
-        <span class="key-badge">A</span>
-        <span class="key-badge">S</span>
-        <span class="key-badge">D</span>
-        <span>Run:</span>
-        <span class="key-badge">SHIFT</span>
-        <span>Jump:</span>
-        <span class="key-badge">SPACE</span>
-        <span>Interact:</span>
-        <span class="key-badge">E</span>
+      <div class="controls-pill">
+        <div class="control-item">
+          <span>Move:</span>
+          <span class="key-badge">W</span>
+          <span class="key-badge">A</span>
+          <span class="key-badge">S</span>
+          <span class="key-badge">D</span>
+        </div>
+        <div class="control-item">
+          <span>Sprint:</span>
+          <span class="key-badge">SHIFT</span>
+        </div>
+        <div class="control-item">
+          <span>Jump:</span>
+          <span class="key-badge">SPACE</span>
+        </div>
+        <div class="control-item">
+          <span>Interact:</span>
+          <span class="key-badge">E</span>
+        </div>
       </div>
 
       <div class="quick-actions">
-        <button type="button" class="hud-action-btn interactive" id="emoteDanceBtn" title="Dance emote (Key G)">
+        <button type="button" class="hud-btn interactive" id="emoteDanceBtn" title="Dance emote (Key G)">
           🕺 Dance
         </button>
-        <button type="button" class="hud-action-btn interactive" id="emoteWaveBtn" title="Wave emote (Key H)">
+        <button type="button" class="hud-btn interactive" id="emoteWaveBtn" title="Wave emote (Key H)">
           👋 Wave
         </button>
-        <button type="button" class="hud-action-btn interactive" id="hudWardrobeBtn">
+        <button type="button" class="hud-btn interactive" id="hudWardrobeBtn">
           ✨ Stylist
         </button>
-        <button type="button" class="hud-action-btn interactive" id="hudBgmBtn">
+        <button type="button" class="hud-btn interactive" id="hudBgmBtn">
           🎵 Music: OFF
         </button>
-        <button type="button" class="hud-action-btn admin-btn interactive" id="hudAdminBtn">
+        <button type="button" class="hud-btn admin-btn interactive" id="hudAdminBtn">
           🔐 Admin
         </button>
       </div>
@@ -275,6 +285,6 @@
   </div>
 
   <!-- Bootstrap Javascript App -->
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=2.0"></script>
 </body>
 </html>

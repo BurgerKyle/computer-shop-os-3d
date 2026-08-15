@@ -28,11 +28,11 @@ export class CharacterCreatorStudio {
     this.prevMouseX = 0;
     this.clock = new THREE.Clock();
 
-    this._initThreeScene();
     this._initUIEvents();
   }
 
   _initThreeScene() {
+    if (this.scene) return;
     this.scene = new THREE.Scene();
     this.scene.background = null;
 
@@ -146,6 +146,8 @@ export class CharacterCreatorStudio {
     this.currentAccount = account;
     this.currentAge = account.age || 10;
     this.currentConfig = account.avatar ? { ...account.avatar } : { ...DEFAULT_AVATAR };
+
+    this._initThreeScene();
 
     const overlay = document.getElementById('characterCreatorOverlay');
     if (overlay) {

@@ -7,7 +7,17 @@
       "gridSlot": 0,
       "age": 9,
       "ageGroup": "child",
-      "avatar": null,
+      "avatar": {
+        "skinColor": "#ffd1a4",
+        "hairStyle": "spiky",
+        "hairColor": "#3b82f6",
+        "faceType": "happy",
+        "outfitType": "hoodie",
+        "primaryColor": "#06b6d4",
+        "secondaryColor": "#1e293b",
+        "backGear": "wings",
+        "accessoryColor": "#ec4899"
+      },
       "remainingSeconds": 2700,
       "dailyLimitSeconds": 1800,
       "weeklySeconds": 3420,
