@@ -62,7 +62,7 @@ export class CharacterController {
     window.addEventListener('keydown', (e) => this._onKeyDown(e));
     window.addEventListener('keyup', (e) => this._onKeyUp(e));
 
-    // Smooth Mouse Orbit
+    // Smooth Mouse Orbit (Left or Right Click Drag)
     this.domElement.addEventListener('mousedown', (e) => {
       this.isDragging = true;
       this.prevMousePos.x = e.clientX;
@@ -81,12 +81,13 @@ export class CharacterController {
       this.prevMousePos.y = e.clientY;
 
       this.cameraYaw -= deltaX * 0.0055;
-      this.cameraPitch = Math.max(-0.25, Math.min(1.25, this.cameraPitch + deltaY * 0.0045));
+      // Allow full vertical tilt range: from looking straight up into the sky (-1.1 rad) to top-down view (1.35 rad)
+      this.cameraPitch = Math.max(-1.1, Math.min(1.35, this.cameraPitch + deltaY * 0.005));
     });
 
     // Zoom
     window.addEventListener('wheel', (e) => {
-      this.targetCameraDistance = Math.max(3.5, Math.min(15.0, this.targetCameraDistance + e.deltaY * 0.004));
+      this.targetCameraDistance = Math.max(3.0, Math.min(22.0, this.targetCameraDistance + e.deltaY * 0.004));
     }, { passive: true });
   }
 
