@@ -9,6 +9,7 @@ import { CharacterCreatorStudio } from './character/character-creator.js';
 import { SceneManager } from './world/scene-manager.js';
 import { SkyIsland } from './world/sky-island.js';
 import { HubsManager } from './world/hubs.js';
+import { KioskAntiEscape } from './kiosk/anti-escape.js';
 
 // Hub Controllers
 import { RobloxHub } from './hubs/roblox-hub.js';
@@ -25,6 +26,7 @@ class App {
     this.sceneManager = new SceneManager(this.canvas);
     this.skyIsland = new SkyIsland(this.sceneManager.scene);
     this.hubsManager = new HubsManager(this.sceneManager.scene);
+    this.antiEscape = new KioskAntiEscape(soundFX);
 
     this.currentCharacter = null;
     this.currentRig = null;
@@ -197,6 +199,11 @@ class App {
       const lockPilotName = document.getElementById('lockPilotName');
       if (lockOverlay) lockOverlay.classList.add('active');
       if (lockPilotName) lockPilotName.textContent = pilot.name;
+      
+      // Notify Electron Process Supervisor to kill any running external game processes
+      if (window.kioskAPI && window.kioskAPI.notifyPlaytimeExpired) {
+        window.kioskAPI.notifyPlaytimeExpired();
+      }
     }
   }
 

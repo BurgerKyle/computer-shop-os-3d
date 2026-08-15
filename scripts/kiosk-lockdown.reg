@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+; Windows Kiosk User Lockdown Policy
+; Disables Task Manager, Fast User Switching, Lock Workstation, and Logoff for non-admin gamer account
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System]
+"DisableTaskMgr"=dword:00000001
+"DisableLockWorkstation"=dword:00000001
+"DisableChangePassword"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer]
+"NoClose"=dword:00000001
+"NoLogoff"=dword:00000001
+"NoRun"=dword:00000001
+"NoControlPanel"=dword:00000001
