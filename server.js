@@ -414,6 +414,16 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
+const { MinecraftBedrockBridge } = require('./src/minecraft-bridge/bedrock-bridge.js');
+
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Computer Shop OS 3D & Activity Dashboard API listening on port ${PORT}`);
+  
+  // Start Minecraft Bedrock OS WebSocket Bridge on Port 19134
+  try {
+    const mcBridge = new MinecraftBedrockBridge(19134);
+    mcBridge.start();
+  } catch (e) {
+    console.error('Could not initialize Minecraft Bedrock Bridge:', e.message);
+  }
 });
