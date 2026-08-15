@@ -1,4 +1,4 @@
-// High-Performance Three.js Scene Manager (Optimized for 60/120 FPS)
+// High-Performance Three.js Scene Manager with Visible Celestial Sun, Dynamic Shadows & Specular Reflections
 import * as THREE from 'three';
 
 export class SceneManager {
@@ -6,14 +6,14 @@ export class SceneManager {
     this.canvas = canvasElement;
 
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x060b19, 0.007);
+    this.scene.fog = new THREE.FogExp2(0x060b19, 0.0055);
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(
       58,
       window.innerWidth / window.innerHeight,
       0.1,
-      800
+      1000
     );
     this.camera.position.set(0, 10, 20);
 
@@ -26,18 +26,18 @@ export class SceneManager {
       depth: true
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    // Cap pixel ratio to 1.25 to guarantee 60-120 FPS on all monitors
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.2;
 
     this.clouds = [];
     this.particles = null;
+    this.sunGroup = null;
 
     this._setupCosmicSky();
-    this._setupLighting();
+    this._setupVisibleCelestialSunAndLighting();
     this._setupAtmosphere();
     this._initResize();
   }
@@ -78,7 +78,7 @@ export class SceneManager {
       exponent: { value: 0.5 }
     };
 
-    const skyGeo = new THREE.SphereGeometry(350, 16, 12);
+    const skyGeo = new THREE.SphereGeometry(450, 16, 12);
     const skyMat = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
@@ -91,30 +91,84 @@ export class SceneManager {
     this.scene.add(sky);
   }
 
-  _setupLighting() {
-    // 1. Soft cyber hemisphere ambient
-    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x090d16, 1.2);
-    hemiLight.position.set(0, 60, 0);
+  _setupVisibleCelestialSunAndLighting() {
+    const sunPos = new THREE.Vector3(75, 95, -50);
+
+    // ☀️ 1. VISIBLE 3D CELESTIAL SUN IN THE SKY
+    this.sunGroup = new THREE.Group();
+    this.sunGroup.position.copy(sunPos);
+
+    // Sun Core Sphere (Ultra-Bright Golden-White Core)
+    const sunCoreGeo = new THREE.SphereGeometry(7.0, 24, 24);
+    const sunCoreMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff
+    });
+    const sunCore = new THREE.Mesh(sunCoreGeo, sunCoreMat);
+    this.sunGroup.add(sunCore);
+
+    // Inner Glowing Corona Halo
+    const innerCoronaGeo = new THREE.SphereGeometry(9.5, 20, 20);
+    const innerCoronaMat = new THREE.MeshBasicMaterial({
+      color: 0xfde047,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+    const innerCorona = new THREE.Mesh(innerCoronaGeo, innerCoronaMat);
+    this.sunGroup.add(innerCorona);
+
+    // Outer Radiant Atmospheric Glow Halo
+    const outerCoronaGeo = new THREE.SphereGeometry(14.0, 16, 16);
+    const outerCoronaMat = new THREE.MeshBasicMaterial({
+      color: 0xf59e0b,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+    const outerCorona = new THREE.Mesh(outerCoronaGeo, outerCoronaMat);
+    this.sunGroup.add(outerCorona);
+
+    // Radiant Sun Flare Star Rays
+    const flareRayGeo = new THREE.OctahedronGeometry(18.0, 0);
+    const flareRayMat = new THREE.MeshBasicMaterial({
+      color: 0xffedd5,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.25,
+      blending: THREE.AdditiveBlending
+    });
+    const flareRays = new THREE.Mesh(flareRayGeo, flareRayMat);
+    this.sunGroup.add(flareRays);
+    this.sunGroup.userData.flareRays = flareRays;
+
+    this.scene.add(this.sunGroup);
+
+    // 💡 2. SUN DIRECTIONAL LIGHT (Main Dynamic Shadow Caster)
+    const sunLight = new THREE.DirectionalLight(0xfffbeb, 2.4);
+    sunLight.position.copy(sunPos);
+    sunLight.target.position.set(0, 0, 0);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 10;
+    sunLight.shadow.camera.far = 260;
+    sunLight.shadow.camera.left = -45;
+    sunLight.shadow.camera.right = 45;
+    sunLight.shadow.camera.top = 45;
+    sunLight.shadow.camera.bottom = -45;
+    sunLight.shadow.bias = -0.0004;
+    sunLight.shadow.normalBias = 0.02;
+    this.scene.add(sunLight);
+    this.scene.add(sunLight.target);
+
+    // 💡 3. Natural Atmosphere Bounce (Sky Blue Top + Warm Turf Ambient)
+    const hemiLight = new THREE.HemisphereLight(0xbae6fd, 0x064e3b, 1.4);
+    hemiLight.position.set(0, 80, 0);
     this.scene.add(hemiLight);
 
-    // 2. Primary Key Sun Light (Sole Shadow Caster)
-    const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
-    sunLight.position.set(30, 50, 25);
-    sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 1024;
-    sunLight.shadow.mapSize.height = 1024;
-    sunLight.shadow.camera.near = 1.0;
-    sunLight.shadow.camera.far = 120;
-    sunLight.shadow.camera.left = -35;
-    sunLight.shadow.camera.right = 35;
-    sunLight.shadow.camera.top = 35;
-    sunLight.shadow.camera.bottom = -35;
-    sunLight.shadow.bias = -0.0006;
-    this.scene.add(sunLight);
-
-    // 3. Subtle Cyan Rim Fill
-    const cyanRim = new THREE.DirectionalLight(0x00f2fe, 0.8);
-    cyanRim.position.set(-30, 20, -30);
+    // 💡 4. Subtle Cyber Rim Fill
+    const cyanRim = new THREE.DirectionalLight(0x00f2fe, 0.75);
+    cyanRim.position.set(-60, 30, 60);
     this.scene.add(cyanRim);
   }
 
@@ -148,7 +202,7 @@ export class SceneManager {
       }
 
       const angle = (i / 10) * Math.PI * 2;
-      const distance = 55 + Math.random() * 35;
+      const distance = 60 + Math.random() * 35;
       const height = -10 + (Math.random() - 0.5) * 12;
 
       cloudGroup.position.set(
@@ -168,14 +222,14 @@ export class SceneManager {
       this.clouds.push(cloudGroup);
     }
 
-    // Glowing Stardust / Cyber Energy Motes
-    const particleCount = 100;
+    // Glowing Stardust / Cyber Motes
+    const particleCount = 120;
     const posArray = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount * 3; i += 3) {
-      posArray[i] = (Math.random() - 0.5) * 70;
-      posArray[i + 1] = Math.random() * 20 - 1;
-      posArray[i + 2] = (Math.random() - 0.5) * 70;
+      posArray[i] = (Math.random() - 0.5) * 80;
+      posArray[i + 1] = Math.random() * 25 - 1;
+      posArray[i + 2] = (Math.random() - 0.5) * 80;
     }
 
     const particleGeo = new THREE.BufferGeometry();
@@ -185,7 +239,7 @@ export class SceneManager {
       size: 0.35,
       color: 0x00f2fe,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.75,
       blending: THREE.AdditiveBlending
     });
 
@@ -211,6 +265,11 @@ export class SceneManager {
 
     if (this.particles) {
       this.particles.rotation.y += delta * 0.015;
+    }
+
+    if (this.sunGroup && this.sunGroup.userData.flareRays) {
+      this.sunGroup.userData.flareRays.rotation.y += delta * 0.08;
+      this.sunGroup.userData.flareRays.rotation.z += delta * 0.05;
     }
   }
 

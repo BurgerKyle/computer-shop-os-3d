@@ -411,48 +411,63 @@ export class HubsManager {
     redRing.position.y = 0.5;
     hub.add(redRing);
 
-    // Floating YouTube Play Button
+    // Floating YouTube Play Button Group
     const playButtonGroup = new THREE.Group();
     playButtonGroup.position.y = 3.6;
 
-    // Metallic Red Chamfered Shield Body
-    const playBodyGeo = new THREE.BoxGeometry(5.4, 3.6, 0.9);
+    // Authentic 16:9 YouTube Shield (Extruded Rounded Rectangle with Bevel)
+    const btnW = 5.2;
+    const btnH = 3.4;
+    const radius = 0.9;
+    const bx = -btnW / 2;
+    const by = -btnH / 2;
+
+    const roundedShape = new THREE.Shape();
+    roundedShape.moveTo(bx + radius, by);
+    roundedShape.lineTo(bx + btnW - radius, by);
+    roundedShape.quadraticCurveTo(bx + btnW, by, bx + btnW, by + radius);
+    roundedShape.lineTo(bx + btnW, by + btnH - radius);
+    roundedShape.quadraticCurveTo(bx + btnW, by + btnH, bx + btnW - radius, by + btnH);
+    roundedShape.lineTo(bx + radius, by + btnH);
+    roundedShape.quadraticCurveTo(bx, by + btnH, bx, by + btnH - radius);
+    roundedShape.lineTo(bx, by + radius);
+    roundedShape.quadraticCurveTo(bx, by, bx + radius, by);
+
+    const extrudeSettings = {
+      depth: 0.6,
+      bevelEnabled: true,
+      bevelSegments: 8,
+      steps: 1,
+      bevelSize: 0.18,
+      bevelThickness: 0.18
+    };
+
+    const playBodyGeo = new THREE.ExtrudeGeometry(roundedShape, extrudeSettings);
     const redMat = new THREE.MeshStandardMaterial({
       color: 0xff0000,
-      emissive: 0xaa0000,
-      emissiveIntensity: 0.35,
-      roughness: 0.15,
-      metalness: 0.75
+      emissive: 0x880000,
+      emissiveIntensity: 0.3,
+      roughness: 0.12,
+      metalness: 0.8
     });
     const playBody = new THREE.Mesh(playBodyGeo, redMat);
+    playBody.position.z = -0.48; // center extrusion
     playButtonGroup.add(playBody);
-
-    // Smooth rounded side caps
-    const capGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.9, 24);
-    const leftCap = new THREE.Mesh(capGeo, redMat);
-    leftCap.position.set(-2.0, 0, 0);
-    playButtonGroup.add(leftCap);
-
-    const rightCap = new THREE.Mesh(capGeo, redMat);
-    rightCap.position.set(2.0, 0, 0);
-    playButtonGroup.add(rightCap);
 
     // Pure White 3D Play Triangle Icon
     const playShape = new THREE.Shape();
-    playShape.moveTo(-0.75, -0.85);
-    playShape.lineTo(0.95, 0);
-    playShape.lineTo(-0.75, 0.85);
-    playShape.lineTo(-0.75, -0.85);
+    playShape.moveTo(-0.75, -0.9);
+    playShape.lineTo(1.05, 0);
+    playShape.lineTo(-0.75, 0.9);
+    playShape.lineTo(-0.75, -0.9);
 
-    const playIconGeo = new THREE.ExtrudeGeometry(playShape, { depth: 0.3, bevelEnabled: false });
-    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1, metalness: 0.2 });
+    const playIconGeo = new THREE.ExtrudeGeometry(playShape, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05, bevelSegments: 3 });
+    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1, metalness: 0.1 });
     const playIcon = new THREE.Mesh(playIconGeo, whiteMat);
-    playIcon.position.set(0, 0, 0.4);
-    playButtonGroup.add(playIcon);
-
+    playIcon.position.set(0, 0, 0.35);
     const backPlayIcon = new THREE.Mesh(playIconGeo, whiteMat);
     backPlayIcon.rotation.y = Math.PI;
-    backPlayIcon.position.set(0, 0, -0.4);
+    backPlayIcon.position.set(0, 0, -0.35);
     playButtonGroup.add(backPlayIcon);
 
     hub.add(playButtonGroup);

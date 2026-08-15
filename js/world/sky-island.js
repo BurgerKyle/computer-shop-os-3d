@@ -167,7 +167,6 @@ export class SkyIsland {
     this._buildMainIsland();
     this._buildPathways();
     this._buildSkyIslandsAndCascades();
-    this._buildEnergyConduits();
 
     this.scene.add(this.root);
   }
@@ -371,38 +370,6 @@ export class SkyIsland {
       foam.position.set(isl.skyX + isl.radius * 0.7, 0.15, isl.skyZ);
       this.root.add(foam);
     });
-  }
-
-  _buildEnergyConduits() {
-    const obeliskGeo = new THREE.BoxGeometry(0.35, 2.4, 0.35);
-    const diamondGeo = new THREE.OctahedronGeometry(0.4, 0);
-
-    const cyanMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
-    const purpleMat = new THREE.MeshBasicMaterial({ color: 0x9333ea });
-
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2 + 0.38;
-      const distance = 14;
-
-      const pylonGroup = new THREE.Group();
-      pylonGroup.position.set(
-        Math.cos(angle) * distance,
-        0,
-        Math.sin(angle) * distance
-      );
-
-      const pylonMat = i % 2 === 0 ? cyanMat : purpleMat;
-
-      const obelisk = new THREE.Mesh(obeliskGeo, pylonMat);
-      obelisk.position.y = 1.2;
-      pylonGroup.add(obelisk);
-
-      const diamond = new THREE.Mesh(diamondGeo, pylonMat);
-      diamond.position.y = 2.8;
-      pylonGroup.add(diamond);
-
-      this.root.add(pylonGroup);
-    }
   }
 
   update(delta) {
