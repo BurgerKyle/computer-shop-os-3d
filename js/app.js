@@ -442,20 +442,39 @@ class App {
 
     // Proximity interaction prompt [E]
     const prompt = document.getElementById('interactPrompt');
-    const triggerHubAction = () => {
+    const triggerHubAction = async () => {
       if (!this.activeHub || !accountsStore.currentPilot) return;
 
       const id = this.activeHub.id;
       if (id === 'roblox') {
-        RobloxHub.open(accountsStore.currentPilot, soundFX);
+        soundFX.playPortalEnter();
+        this.showToast('🚀 Launching Roblox Directly on PC...');
+        try {
+          if (window.kioskAPI && window.kioskAPI.launchRoblox) {
+            await window.kioskAPI.launchRoblox();
+          } else {
+            await fetch('/api/launch/roblox', { method: 'POST' });
+          }
+        } catch (e) {
+          window.location.href = 'roblox://';
+        }
       } else if (id === 'minecraft') {
-        MinecraftHub.open(accountsStore.currentPilot, soundFX);
+        soundFX.playPortalEnter();
+        this.showToast('⛏️ Launching Minecraft Directly on PC...');
+        try {
+          if (window.kioskAPI && window.kioskAPI.launchMinecraft) {
+            await window.kioskAPI.launchMinecraft();
+          } else {
+            await fetch('/api/launch/minecraft', { method: 'POST' });
+          }
+        } catch (e) {
+          window.location.href = 'minecraft://';
+        }
       } else if (id === 'youtube') {
         YouTubeHub.open(accountsStore.currentPilot, soundFX);
       } else if (id === 'space-typing') {
         SpaceTypingHub.open(accountsStore.currentPilot, soundFX, (pts) => {
           accountsStore.currentPilot.weeklySeconds = (accountsStore.currentPilot.weeklySeconds || 0) + 120;
-          accountsStore._save();
         });
       } else if (id === 'web-explorer') {
         WebExplorerHub.open(accountsStore.currentPilot, soundFX);
@@ -577,6 +596,41 @@ class App {
     };
 
     animate();
+  }
+
+  showToast(msg) {
+    let toast = document.getElementById('kioskHudToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'kioskHudToast';
+      toast.style.position = 'fixed';
+      toast.style.top = '85px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'rgba(10, 15, 29, 0.95)';
+      toast.style.border = '2px solid #00f2fe';
+      toast.style.borderRadius = '9999px';
+      toast.style.padding = '12px 28px';
+      toast.style.color = '#ffffff';
+      toast.style.fontFamily = 'Space Grotesk, sans-serif';
+      toast.style.fontWeight = '800';
+      toast.style.fontSize = '16px';
+      toast.style.boxShadow = '0 0 30px rgba(0, 242, 254, 0.5)';
+      toast.style.zIndex = '9999';
+      toast.style.transition = 'all 0.3s ease';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    toast.style.visibility = 'visible';
+
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      if (toast) {
+        toast.style.opacity = '0';
+        toast.style.visibility = 'hidden';
+      }
+    }, 4000);
   }
 }
 

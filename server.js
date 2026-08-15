@@ -357,12 +357,13 @@ const server = http.createServer(async (req, res) => {
       return send(200, { ok: true });
     }
 
-    // 8. Native Game Launchers (Bypasses all Chrome protocol popups)
+    // 8. Native Game Launchers (Instant 1-Click OS Execution)
     if (pathname === '/api/launch/roblox' && req.method === 'POST') {
-      const { spawn } = require('child_process');
+      const { exec } = require('child_process');
       try {
-        const proc = spawn('cmd.exe', ['/c', 'start', 'roblox://'], { detached: true, stdio: 'ignore' });
-        proc.unref();
+        exec('cmd.exe /c start "" "roblox://"', (err) => {
+          if (err) exec('powershell -Command "Start-Process \'roblox://\'"');
+        });
         return send(200, { ok: true, message: 'Roblox launched directly on Windows' });
       } catch (e) {
         return send(500, { ok: false, error: e.message });
@@ -370,10 +371,11 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/api/launch/minecraft' && req.method === 'POST') {
-      const { spawn } = require('child_process');
+      const { exec } = require('child_process');
       try {
-        const proc = spawn('cmd.exe', ['/c', 'start', 'minecraft://'], { detached: true, stdio: 'ignore' });
-        proc.unref();
+        exec('cmd.exe /c start "" "minecraft://"', (err) => {
+          if (err) exec('powershell -Command "Start-Process \'minecraft://\'"');
+        });
         return send(200, { ok: true, message: 'Minecraft launched directly on Windows' });
       } catch (e) {
         return send(500, { ok: false, error: e.message });
