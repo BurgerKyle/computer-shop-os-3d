@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Computer Shop OS - 3D Sky Island Hub</title>
+  
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/character-creator.css" />
+  <link rel="stylesheet" href="css/hubs.css" />
+
+  <!-- Import maps for Three.js ES Modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- 3D WebGL Canvas -->
+  <canvas id="canvas3d"></canvas>
+
+  <!-- Main UI Layer -->
+  <div class="ui-layer">
+    <!-- Top HUD Bar -->
+    <header class="topbar">
+      <div class="brand-badge">
+        <span class="brand-icon">🏝️</span>
+        <span class="brand-name">Computer Shop OS</span>
+        <span class="brand-pill">3D Sky Hub</span>
+      </div>
+
+      <div class="topbar-right">
+        <button type="button" class="pilot-hud-btn interactive" id="pilotHudBtn" title="Tap to switch gamer">
+          <div class="pilot-avatar-dot" id="hudAvatarDot">?</div>
+          <span id="hudPilotName">Who's playing?</span>
+          <span class="age-badge child" id="hudAgeBadge" hidden>KID</span>
+        </button>
+
+        <div class="playtime-badge" id="hudPlaytimeBadge" hidden>
+          <span>⏱️</span>
+          <span id="hudPlaytimeTime">30:00</span>
+        </div>
+
+        <div class="hud-clock" id="hudClock">--:--</div>
+      </div>
+    </header>
+
+    <!-- Center Interaction Prompt -->
+    <div class="interact-prompt" id="interactPrompt">
+      <div class="interact-key">E</div>
+      <div class="interact-info">
+        <div class="interact-title" id="interactTitle">Roblox Hub</div>
+        <div class="interact-sub" id="interactSub">Press E or tap to enter</div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls HUD -->
+    <footer class="bottombar">
+      <div class="controls-hint">
+        <span>🎮 Move:</span>
+        <span class="key-badge">W</span>
+        <span class="key-badge">A</span>
+        <span class="key-badge">S</span>
+        <span class="key-badge">D</span>
+        <span>Run:</span>
+        <span class="key-badge">SHIFT</span>
+        <span>Jump:</span>
+        <span class="key-badge">SPACE</span>
+        <span>Interact:</span>
+        <span class="key-badge">E</span>
+      </div>
+
+      <div class="quick-actions">
+        <button type="button" class="hud-action-btn interactive" id="emoteDanceBtn" title="Dance emote (Key G)">
+          🕺 Dance
+        </button>
+        <button type="button" class="hud-action-btn interactive" id="emoteWaveBtn" title="Wave emote (Key H)">
+          👋 Wave
+        </button>
+        <button type="button" class="hud-action-btn interactive" id="hudWardrobeBtn">
+          ✨ Stylist
+        </button>
+        <button type="button" class="hud-action-btn interactive" id="hudBgmBtn">
+          🎵 Music: OFF
+        </button>
+        <button type="button" class="hud-action-btn admin-btn interactive" id="hudAdminBtn">
+          🔐 Admin
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Touch Controls Overlay for Mobile / Tablet -->
+  <div class="touch-controls">
+    <div class="virtual-joystick-container" id="virtualJoystickContainer">
+      <div class="virtual-joystick-knob" id="virtualJoystickKnob"></div>
+    </div>
+    <div class="touch-buttons">
+      <button type="button" class="touch-action-btn" id="touchJumpBtn">JUMP</button>
+    </div>
+  </div>
+
+  <!-- Account Picker & Welcome Screen -->
+  <section class="welcome-overlay" id="welcomeScreenOverlay">
+    <div class="welcome-box">
+      <div class="welcome-header">
+        <h1 class="welcome-title">Who's playing?</h1>
+        <p class="welcome-subtitle">Select your pilot profile to spawn on the 3D Sky Island.</p>
+      </div>
+
+      <!-- 12-Slot Grid View -->
+      <div id="accountGridView">
+        <div class="slots-grid" id="slotsGrid"></div>
+      </div>
+
+      <!-- PIN Auth View -->
+      <div class="pin-auth-box" id="accountPinAuthView" hidden>
+        <h2 style="font-size: 22px; margin-bottom: 6px;" id="loginAccountNameDisplay">Pilot Login</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter your 4-digit PIN to enter the island.</p>
+
+        <div class="form-group">
+          <label class="form-label" style="text-align: center;">4-Digit PIN</label>
+          <input type="password" id="loginPinInput" class="form-input pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" />
+          <div class="form-error" id="pinLoginError" hidden></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="pinLoginBackBtn">Back</button>
+          <button type="button" class="btn btn-primary" id="submitPinLoginBtn">Log In</button>
+        </div>
+      </div>
+
+      <!-- Create Account View -->
+      <div class="account-create-box" id="accountCreateView" hidden>
+        <h2 style="font-size: 22px; margin-bottom: 6px;">New Pilot Registration</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Pick your name, 4-digit PIN, and your age.</p>
+
+        <div class="form-group">
+          <label class="form-label">Gamer Name</label>
+          <input type="text" id="createNameInput" class="form-input" maxlength="20" placeholder="e.g. AstroKid" autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">4-Digit Security PIN</label>
+          <input type="password" id="createPinInput" class="form-input pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" />
+        </div>
+
+        <!-- Age Input (Child vs Teen) -->
+        <div class="form-group">
+          <label class="form-label">Select Age Group</label>
+          <div class="age-selector-group">
+            <div class="age-option-btn active child" id="createAgeChild">
+              <span class="age-title">👶 Child (&lt; 13)</span>
+              <span class="age-desc">YouTube Kids & Safe Search</span>
+            </div>
+            <div class="age-option-btn teen" id="createAgeTeen">
+              <span class="age-title">🧑‍🎤 Teen (13+)</span>
+              <span class="age-desc">Regular YouTube & Full Hubs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-error" id="createAccountError" hidden></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="createAccountBackBtn">Back</button>
+          <button type="button" class="btn btn-primary" id="submitCreateAccountBtn">Create & Customize</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D Character Creator Studio Overlay -->
+  <section class="creator-overlay" id="characterCreatorOverlay">
+    <!-- 3D Pedestal Viewport -->
+    <div class="creator-viewport">
+      <div class="creator-banner">
+        <h1 class="creator-title" id="creatorPilotName">Avatar Customizer Studio</h1>
+        <div class="creator-badge" id="creatorLegacyBadge" hidden>⚡ LEGACY ACCOUNT: CREATE YOUR AVATAR TO PLAY</div>
+      </div>
+
+      <div id="creatorPreviewCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: auto;"></div>
+
+      <div class="creator-3d-hint">
+        <span>🔄</span> Drag to spin avatar 360°
+      </div>
+
+      <div class="creator-viewport-controls">
+        <button type="button" class="viewport-btn" id="animIdleBtn">Idle</button>
+        <button type="button" class="viewport-btn" id="animWaveBtn">Wave</button>
+        <button type="button" class="viewport-btn" id="animDanceBtn">Dance</button>
+      </div>
+    </div>
+
+    <!-- Customization Options Sidebar -->
+    <div class="creator-sidebar">
+      <div class="creator-tabs">
+        <button type="button" class="creator-tab active" data-tab="body">
+          <span class="tab-icon">👤</span>
+          <span>Skin</span>
+        </button>
+        <button type="button" class="creator-tab" data-tab="hair">
+          <span class="tab-icon">💇</span>
+          <span>Hair & Hats</span>
+        </button>
+        <button type="button" class="creator-tab" data-tab="face">
+          <span class="tab-icon">😎</span>
+          <span>Face</span>
+        </button>
+        <button type="button" class="creator-tab" data-tab="outfit">
+          <span class="tab-icon">👕</span>
+          <span>Outfit</span>
+        </button>
+        <button type="button" class="creator-tab" data-tab="gear">
+          <span class="tab-icon">✨</span>
+          <span>Wings & Gear</span>
+        </button>
+        <button type="button" class="creator-tab" data-tab="presets">
+          <span class="tab-icon">⭐</span>
+          <span>Presets</span>
+        </button>
+      </div>
+
+      <!-- Age input bar inside creator (especially for legacy migration) -->
+      <div style="padding: 14px 24px; background: rgba(15,23,42,0.8); border-bottom: 1px solid var(--border-glass);">
+        <label class="form-label" style="font-size: 11px; margin-bottom: 6px;">Your Age Classification</label>
+        <div class="age-selector-group" style="margin-top: 0;">
+          <div class="age-option-btn active child" id="ageOptionChild" style="padding: 8px;">
+            <span class="age-title" style="font-size: 13px;">👶 Child (&lt; 13)</span>
+            <span class="age-desc" style="font-size: 10px;">YouTube Kids</span>
+          </div>
+          <div class="age-option-btn teen" id="ageOptionTeen" style="padding: 8px;">
+            <span class="age-title" style="font-size: 13px;">🧑‍🎤 Teen (13+)</span>
+            <span class="age-desc" style="font-size: 10px;">Regular YouTube</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="creator-panel-content" id="creatorPanelContent"></div>
+
+      <div class="creator-bottom-actions">
+        <button type="button" class="btn randomize-btn" id="randomizeAvatarBtn">
+          🎲 Randomize Style
+        </button>
+        <button type="button" class="btn save-spawn-btn" id="saveAvatarBtn">
+          🚀 Fly to Sky Island!
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Universal Hub Modal Window -->
+  <div class="modal-backdrop" id="hubModal">
+    <div class="modal-window">
+      <button type="button" class="modal-close-btn" id="hubModalCloseBtn" title="Close">✕</button>
+      <div id="hubModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Daily Playtime Limit Exhausted Modal -->
+  <div class="modal-backdrop" id="dailyLockOverlay">
+    <div class="modal-window lock-screen-container">
+      <div class="lock-big-clock">00:00</div>
+      <h2 style="font-size: 28px; margin-bottom: 8px;">Great job, <span id="lockPilotName">Pilot</span>!</h2>
+      <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 24px; max-width: 440px; margin-left: auto; margin-right: auto;">
+        You've used all your playtime for today on this terminal. Come back tomorrow for more adventures!
+      </p>
+      <button type="button" class="btn btn-primary" id="nextPilotBtn" style="max-width: 320px; margin: 0 auto; background: #3b82f6;">
+        👋 Let Next Gamer Play
+      </button>
+    </div>
+  </div>
+
+  <!-- Bootstrap Javascript App -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

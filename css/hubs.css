@@ -1,0 +1,512 @@
+/* Hub Modals & In-App Experiences CSS */
+
+/* Hub Header */
+.hub-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.hub-badge-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.hub-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.hub-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Roblox Hub Styles */
+.roblox-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #e2231a, #991b1b);
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.game-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-card:hover {
+  border-color: #ef4444;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+}
+
+.game-thumb {
+  width: 100%;
+  height: 110px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  position: relative;
+}
+
+.game-players-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #34d399;
+}
+
+.game-info {
+  padding: 12px;
+}
+
+.game-name {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.game-genre {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.launcher-banner {
+  background: linear-gradient(135deg, rgba(226, 35, 26, 0.15), rgba(153, 27, 27, 0.25));
+  border: 1px solid rgba(226, 35, 26, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.launcher-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.launcher-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+}
+
+/* Minecraft Hub Styles */
+.minecraft-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #6d9f3f, #3f6212);
+}
+
+.server-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid #84cc16;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 20px rgba(132, 204, 22, 0.15);
+}
+
+.server-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* YouTube Hub (Age-Aware) */
+.youtube-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #ff0000, #b91c1c);
+}
+
+.age-switch-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.video-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.video-card:hover {
+  border-color: #ef4444;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+}
+
+.video-thumb {
+  width: 100%;
+  height: 125px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-icon-overlay {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.85);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.video-card:hover .play-icon-overlay {
+  transform: scale(1.15);
+}
+
+.video-details {
+  padding: 12px;
+}
+
+.video-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.video-channel {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Video Player Modal Frame */
+.video-player-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: black;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+/* Space Typing Mini-Game */
+.space-typing-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+}
+
+.arcade-screen-container {
+  width: 100%;
+  height: 420px;
+  background: #050510;
+  border: 3px solid #6366f1;
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.35), inset 0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+#typingGameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.typing-hud {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  pointer-events: none;
+}
+
+.typing-input-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.typing-input {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid #8b5cf6;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #a78bfa;
+  outline: none;
+}
+
+.typing-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+/* Web Explorer Hub */
+.web-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+.browser-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border: 1px solid var(--border-glass);
+}
+
+.browser-address-bar {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.8);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.browser-bookmarks {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.bookmark-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.bookmark-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-cyan);
+}
+
+.browser-viewport {
+  width: 100%;
+  height: 440px;
+  background: white;
+  border-radius: var(--radius-md);
+  border: none;
+}
+
+/* Leaderboard Hub */
+.leaderboard-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-row:hover {
+  background: rgba(51, 65, 85, 0.7);
+  transform: translateX(4px);
+}
+
+.leaderboard-row.me {
+  border-color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.15);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.rank-badge {
+  font-size: 20px;
+  font-weight: 900;
+  width: 36px;
+}
+
+.gamer-name {
+  font-weight: 800;
+  font-size: 15px;
+  flex: 1;
+  margin-left: 12px;
+}
+
+.gamer-time {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #34d399;
+  font-size: 14px;
+}
+
+/* Admin Hub / Kuya Ricky Station */
+.admin-theme .hub-badge-icon {
+  background: linear-gradient(135deg, #f59e0b, #b45309);
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 12px;
+}
+
+.admin-tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.admin-tab-btn.active {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.chat-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  height: 280px;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.chat-msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.chat-msg.admin {
+  align-self: flex-start;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fef3c7;
+}
+
+.chat-msg.user {
+  align-self: flex-end;
+  background: rgba(6, 182, 212, 0.25);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: #cffafe;
+}
+
+/* Daily Lock Screen Modal */
+.lock-screen-container {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.lock-big-clock {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 900;
+  color: #f87171;
+  text-shadow: 0 0 25px rgba(248, 113, 113, 0.5);
+  margin-bottom: 12px;
+}
