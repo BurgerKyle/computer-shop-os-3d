@@ -510,6 +510,11 @@ class App {
       // Update Scene Environment (Clouds, Sky, Atmosphere)
       this.sceneManager.update(delta);
 
+      // Update Sky Island Waterfall Animations
+      if (this.skyIsland) {
+        this.skyIsland.update(delta);
+      }
+
       // Update Character Controller & Physics
       if (this.controller) {
         this.controller.update(delta, this.skyIsland.islandRadius);

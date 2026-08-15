@@ -292,22 +292,39 @@ export class CharacterController {
       this.camera.updateProjectionMatrix();
     }
 
-    // Target focus point on character
+    // Target focus point on character (Head level)
     this.targetPos.set(
       this.character.position.x,
       this.character.position.y + 1.35,
       this.character.position.z
     );
 
-    // Calculate Spherical Orbit Position
+    // Calculate Spherical Orbit Position with Smart Floor Collision Avoidance
     const cosPitch = Math.cos(this.cameraPitch);
+    const sinPitch = Math.sin(this.cameraPitch);
+
+    // If looking up (sinPitch < 0), dynamically adjust distance so camera stays comfortably above ground
+    let effectiveDist = this.cameraDistance;
+    const rawCamY = this.targetPos.y + sinPitch * effectiveDist + this.cameraHeight;
+    const minFloorY = 0.55;
+
+    if (rawCamY < minFloorY && sinPitch !== 0) {
+      // Shorten camera distance to keep camera above floor
+      const allowedY = this.targetPos.y + this.cameraHeight - minFloorY;
+      if (allowedY > 0) {
+        effectiveDist = Math.min(effectiveDist, Math.abs(allowedY / Math.max(0.1, -sinPitch)));
+      }
+    }
+
     this._camOffset.set(
-      Math.sin(this.cameraYaw) * cosPitch * this.cameraDistance,
-      Math.sin(this.cameraPitch) * this.cameraDistance + this.cameraHeight,
-      Math.cos(this.cameraYaw) * cosPitch * this.cameraDistance
+      Math.sin(this.cameraYaw) * cosPitch * effectiveDist,
+      Math.max(minFloorY - this.targetPos.y, sinPitch * effectiveDist + this.cameraHeight),
+      Math.cos(this.cameraYaw) * cosPitch * effectiveDist
     );
 
     this._desiredCamPos.copy(this.targetPos).add(this._camOffset);
+    // Hard floor clamp
+    this._desiredCamPos.y = Math.max(minFloorY, this._desiredCamPos.y);
 
     // High-responsiveness Camera Lag
     this.camera.position.lerp(this._desiredCamPos, Math.min(1, 14.0 * dt));
