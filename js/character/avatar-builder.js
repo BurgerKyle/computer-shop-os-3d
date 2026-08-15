@@ -274,47 +274,54 @@ export class AvatarBuilder {
     } else if (cfg.hairStyle === 'cap') {
       // Gamer Baseball Cap
       const capGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.18, 16);
-      const cap = new THREE.Mesh(capGeo, primaryMat);
+      const cap = new THREE.Mesh(capGeo, hairMat);
       cap.position.y = 0.42;
       headGroup.add(cap);
 
       const brimGeo = new THREE.BoxGeometry(0.34, 0.04, 0.24);
-      const brim = new THREE.Mesh(brimGeo, primaryMat);
+      const brim = new THREE.Mesh(brimGeo, hairMat);
       brim.position.set(0, 0.36, 0.24);
       headGroup.add(brim);
     } else if (cfg.hairStyle === 'crown') {
-      // Golden King Crown
+      // King Crown
       const crownGeo = new THREE.CylinderGeometry(0.28, 0.26, 0.2, 8);
-      const crown = new THREE.Mesh(crownGeo, accessoryMat);
+      const crown = new THREE.Mesh(crownGeo, hairMat);
       crown.position.y = 0.46;
       headGroup.add(crown);
     } else if (cfg.hairStyle === 'astronaut') {
       // Astronaut Dome Helmet
       const helmetGeo = new THREE.SphereGeometry(0.36, 16, 16);
-      const helmet = new THREE.Mesh(helmetGeo, primaryMat);
+      const helmet = new THREE.Mesh(helmetGeo, hairMat);
       helmet.position.y = 0.24;
       headGroup.add(helmet);
 
       const glassGeo = new THREE.SphereGeometry(0.26, 16, 16, 0, Math.PI);
-      const glass = new THREE.Mesh(glassGeo, glowMat);
+      const glassMat = new THREE.MeshStandardMaterial({
+        color: 0x00f2fe,
+        emissive: 0x00f2fe,
+        emissiveIntensity: 0.6,
+        roughness: 0.1,
+        metalness: 0.9
+      });
+      const glass = new THREE.Mesh(glassGeo, glassMat);
       glass.rotation.x = Math.PI / 2;
       glass.position.set(0, 0.24, 0.18);
       headGroup.add(glass);
     } else if (cfg.hairStyle === 'headphones') {
       // Gamer RGB Headphones
       const bandGeo = new THREE.TorusGeometry(0.3, 0.04, 8, 24, Math.PI);
-      const band = new THREE.Mesh(bandGeo, accessoryMat);
+      const band = new THREE.Mesh(bandGeo, hairMat);
       band.position.set(0, 0.32, 0);
       band.rotation.z = Math.PI;
       headGroup.add(band);
 
       const earGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.08, 12);
-      const leftEar = new THREE.Mesh(earGeo, glowMat);
+      const leftEar = new THREE.Mesh(earGeo, hairMat);
       leftEar.rotation.z = Math.PI / 2;
       leftEar.position.set(-0.28, 0.22, 0);
       headGroup.add(leftEar);
 
-      const rightEar = new THREE.Mesh(earGeo, glowMat);
+      const rightEar = new THREE.Mesh(earGeo, hairMat);
       rightEar.rotation.z = Math.PI / 2;
       rightEar.position.set(0.28, 0.22, 0);
       headGroup.add(rightEar);

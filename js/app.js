@@ -47,7 +47,6 @@ class App {
     this._initHUD();
     this._initAccountPicker();
     this._initHubModals();
-    this._initTouchControls();
     this._startLoop();
 
     // Subscribe to accounts changes
@@ -496,67 +495,6 @@ class App {
         triggerHubAction();
       }
     });
-  }
-
-  _initTouchControls() {
-    const joystickContainer = document.getElementById('virtualJoystickContainer');
-    const knob = document.getElementById('virtualJoystickKnob');
-    const jumpBtn = document.getElementById('touchJumpBtn');
-
-    if (jumpBtn) {
-      jumpBtn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if (this.controller) this.controller.jump();
-      });
-    }
-
-    if (!joystickContainer || !knob) return;
-
-    let touchId = null;
-    let center = { x: 0, y: 0 };
-
-    joystickContainer.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.changedTouches[0];
-      touchId = touch.identifier;
-      const rect = joystickContainer.getBoundingClientRect();
-      center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    });
-
-    window.addEventListener('touchmove', (e) => {
-      if (touchId === null) return;
-      for (let i = 0; i < e.changedTouches.length; i++) {
-        const touch = e.changedTouches[i];
-        if (touch.identifier === touchId) {
-          const dx = touch.clientX - center.x;
-          const dy = touch.clientY - center.y;
-          const dist = Math.hypot(dx, dy);
-          const maxDist = 45;
-          const clampedDist = Math.min(dist, maxDist);
-          const angle = Math.atan2(dy, dx);
-
-          const knobX = Math.cos(angle) * clampedDist;
-          const knobY = Math.sin(angle) * clampedDist;
-
-          knob.style.transform = `translate(calc(-50% + ${knobX}px), calc(-50% + ${knobY}px))`;
-
-          if (this.controller) {
-            this.controller.setJoystickInput(knobX / maxDist, knobY / maxDist);
-          }
-        }
-      }
-    });
-
-    const resetJoystick = () => {
-      touchId = null;
-      knob.style.transform = 'translate(-50%, -50%)';
-      if (this.controller) {
-        this.controller.setJoystickInput(0, 0);
-      }
-    };
-
-    window.addEventListener('touchend', resetJoystick);
-    window.addEventListener('touchcancel', resetJoystick);
   }
 
   _startLoop() {
