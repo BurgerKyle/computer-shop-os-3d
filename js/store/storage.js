@@ -99,7 +99,7 @@ export class StorageService {
       accounts: initialSeedAccounts,
       nextId: 5,
       currentPilotId: null,
-      adminPin: 'admin1234'
+      adminPin: null
     };
   }
 
