@@ -3,24 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Computer Shop OS 3D — sky island kiosk hub with age-gated media and playtime controls." />
+  <meta name="theme-color" content="#030712" />
   <title>Computer Shop OS - 3D Sky Island Hub</title>
   
-  <link rel="stylesheet" href="css/main.css?v=2.0" />
-  <link rel="stylesheet" href="css/character-creator.css?v=2.0" />
-  <link rel="stylesheet" href="css/hubs.css?v=2.0" />
+  <link rel="stylesheet" href="css/main.css?v=2.1" />
+  <link rel="stylesheet" href="css/character-creator.css?v=2.1" />
+  <link rel="stylesheet" href="css/hubs.css?v=2.1" />
 
-  <!-- Import maps for Three.js ES Modules -->
+  <!-- Three.js from local install (offline-friendly for kiosk) -->
   <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        "three": "/node_modules/three/build/three.module.js"
       }
     }
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#welcomeScreenOverlay">Skip to account picker</a>
+
   <!-- 3D WebGL Canvas -->
-  <canvas id="canvas3d"></canvas>
+  <canvas id="canvas3d" aria-label="3D sky island world" role="img"></canvas>
 
   <!-- Main UI Layer -->
   <div class="ui-layer">
@@ -104,16 +108,16 @@
   </div>
 
   <!-- Account Picker & Welcome Screen -->
-  <section class="welcome-overlay" id="welcomeScreenOverlay">
+  <section class="welcome-overlay" id="welcomeScreenOverlay" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
     <div class="welcome-box">
       <div class="welcome-header">
-        <h1 class="welcome-title">Who's playing?</h1>
+        <h1 class="welcome-title" id="welcomeTitle">Who's playing?</h1>
         <p class="welcome-subtitle">Select your pilot profile to spawn on the 3D Sky Island.</p>
       </div>
 
       <!-- 12-Slot Grid View -->
       <div id="accountGridView">
-        <div class="slots-grid" id="slotsGrid"></div>
+        <div class="slots-grid" id="slotsGrid" role="list" aria-label="Pilot slots"></div>
       </div>
 
       <!-- PIN Auth View -->
@@ -122,9 +126,9 @@
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter your 4-digit PIN to enter the island.</p>
 
         <div class="form-group">
-          <label class="form-label" style="text-align: center;">4-Digit PIN</label>
-          <input type="password" id="loginPinInput" class="form-input pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" />
-          <div class="form-error" id="pinLoginError" hidden></div>
+          <label class="form-label" for="loginPinInput" style="text-align: center;">4-Digit PIN</label>
+          <input type="password" id="loginPinInput" class="form-input pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" aria-describedby="pinLoginError" />
+          <div class="form-error" id="pinLoginError" role="alert" hidden></div>
         </div>
 
         <div class="form-actions">
@@ -275,6 +279,6 @@
   </div>
 
   <!-- Bootstrap Javascript App -->
-  <script type="module" src="js/app.js?v=2.0"></script>
+  <script type="module" src="js/app.js?v=2.1"></script>
 </body>
 </html>

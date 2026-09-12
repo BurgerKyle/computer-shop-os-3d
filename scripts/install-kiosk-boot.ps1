@@ -36,4 +36,4 @@ Register-ScheduledTask -TaskName "ComputerShopOS-3D-Boot" -Action $Action -Trigg
 
 Write-Host "[+] Registered boot task 'ComputerShopOS-3D-Boot' on logon for $KioskUser." -ForegroundColor Green
 Write-Host "[+] The computer will now automatically boot into the 3D Sky Island Kiosk." -ForegroundColor Green
-Write-Host "[!] Admin Exit Password: admin1234 (Press Ctrl+Alt+A or tap Golden Spire in 3D to exit)" -ForegroundColor Yellow
+Write-Host "[!] Set ADMIN_PASSWORD in the environment before production use. Press Ctrl+Alt+A or tap the Golden Spire in 3D to open the admin exit gate." -ForegroundColor Yellow

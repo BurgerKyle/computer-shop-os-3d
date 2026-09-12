@@ -19,6 +19,7 @@ import { SpaceTypingHub } from './hubs/space-typing-hub.js';
 import { WebExplorerHub } from './hubs/web-explorer-hub.js';
 import { LeaderboardHub } from './hubs/leaderboard-hub.js';
 import { AdminHub } from './hubs/admin-hub.js';
+import { escapeHtml } from './util/dom.js';
 
 class App {
   constructor() {
@@ -215,9 +216,11 @@ class App {
     const pinBackBtn = document.getElementById('pinLoginBackBtn');
     const pinError = document.getElementById('pinLoginError');
 
-    const doPinLogin = () => {
+    const doPinLogin = async () => {
       if (!this.selectedAccount) return;
-      const res = accountsStore.login(this.selectedAccount.name, pinInput.value);
+      if (pinSubmitBtn) pinSubmitBtn.disabled = true;
+      const res = await accountsStore.login(this.selectedAccount.name, pinInput.value);
+      if (pinSubmitBtn) pinSubmitBtn.disabled = false;
       if (!res.ok) {
         pinError.textContent = res.error || 'Wrong PIN';
         pinError.hidden = false;
@@ -274,11 +277,13 @@ class App {
       });
     }
 
-    const doCreate = () => {
+    const doCreate = async () => {
       const name = createNameInput.value.trim();
       const pin = createPinInput.value.trim();
 
-      const res = accountsStore.register(name, pin, selectedCreateAge, this.pendingSlot);
+      if (createSubmitBtn) createSubmitBtn.disabled = true;
+      const res = await accountsStore.register(name, pin, selectedCreateAge, this.pendingSlot);
+      if (createSubmitBtn) createSubmitBtn.disabled = false;
       if (!res.ok) {
         createError.textContent = res.error || 'Error creating account';
         createError.hidden = false;
@@ -336,15 +341,18 @@ class App {
         const isLegacy = !acct.avatar;
         card.className = `slot-card filled ${isLegacy ? 'legacy' : ''} ${acct.lockedToday ? 'locked' : ''}`;
         card.innerHTML = `
-          <div class="slot-avatar-circle">
-            ${acct.name.charAt(0).toUpperCase()}
+          <div class="slot-avatar-circle" aria-hidden="true">
+            ${escapeHtml(acct.name.charAt(0).toUpperCase())}
           </div>
-          <div class="slot-name">${acct.name}</div>
+          <div class="slot-name">${escapeHtml(acct.name)}</div>
           <div class="slot-meta">
-            <span class="age-badge ${acct.ageGroup}">${acct.ageGroup}</span>
+            <span class="age-badge ${escapeHtml(acct.ageGroup)}">${escapeHtml(acct.ageGroup)}</span>
             <span>${Math.floor(acct.remainingSeconds / 60)}m left</span>
           </div>
         `;
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Sign in as ${acct.name}`);
 
         card.addEventListener('click', () => {
           soundFX.playClick();
@@ -355,13 +363,22 @@ class App {
           this._showWelcomeView('pin');
           document.getElementById('loginPinInput').focus();
         });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
       } else {
         card.className = 'slot-card empty';
         card.innerHTML = `
-          <div class="slot-avatar-circle">+</div>
+          <div class="slot-avatar-circle" aria-hidden="true">+</div>
           <div class="slot-name" style="color: var(--text-muted); font-size: 13px;">New Pilot</div>
           <div class="slot-meta"><span>Slot ${i + 1}</span></div>
         `;
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Create new pilot in slot ${i + 1}`);
 
         card.addEventListener('click', () => {
           soundFX.playClick();
@@ -371,6 +388,12 @@ class App {
           document.getElementById('createAccountError').hidden = true;
           this._showWelcomeView('create');
           document.getElementById('createNameInput').focus();
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
         });
       }
 

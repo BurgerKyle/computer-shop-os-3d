@@ -1,0 +1,6 @@
+{
+  "accounts": [],
+  "nextId": 1,
+  "activePilotId": null,
+  "_comment": "Runtime accounts live in accounts.json (gitignored). Server seeds defaults when missing."
+}
